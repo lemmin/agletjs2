@@ -41,14 +41,3 @@ Aglet.prototype._appendAglet = function (aglet, appendDOM) {
 		this._dom.appendChild(aglet._dom);
 	}
 }
-
-
-let aglets = document.getElementsByClassName('aglet');
-
-for (let aglet of aglets) {
-	let test = new Aglet(aglet);
-	console.log(test);
-}
-
-let test2 = new Aglet(document.body);
-console.log(test2);
