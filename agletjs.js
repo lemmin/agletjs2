@@ -40,4 +40,14 @@ Aglet.prototype._appendAglet = function (aglet, appendDOM) {
 	if (appendDOM) {
 		this._dom.appendChild(aglet._dom);
 	}
+
+	return aglet;
+}
+
+Aglet.prototype._newAglet = function (aglet) {
+	let newdom = aglet._dom.cloneNode(1);
+
+	aglet = this._appendAglet(new Aglet(newdom), 1);
+
+	return aglet;
 }
