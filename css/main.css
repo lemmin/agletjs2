@@ -50,6 +50,10 @@ h3 {
 	margin: 0 auto 5vw;
 }
 
+.intro img {
+	max-width: 300px;
+}
+
 /* Social Menu, */
 .social-menu {
 	display: flex;
