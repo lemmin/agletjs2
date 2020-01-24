@@ -4,7 +4,7 @@
 AgletJS aims to fix the disconnect between the DOM and JS. Aglets work similarly to jQuery objects, but with very few extra features. The main purpose of an Aglet is to provide a more concise, hierarchical structure for your application's variable references to DOM objects.
 
 
-### For example, with the following code:
+#### For example, with the following code:
 ```HTML
 <form ag-name="search">
 	<label>
@@ -23,8 +23,14 @@ AgletJS aims to fix the disconnect between the DOM and JS. Aglets work similarly
 	</div>
 </form>
 ```
+#### And this simple JS:
 
-Your application will automatically have access to variables like `search.terms` and `search.options.exact`
+```Javascript
+var app = new Aglet(document.body);
+```
+
+
+Your application will then have access to components like `app.search.terms` and `app.search.options.exact` complete with dom references
 
 
 Aglets can also be defined as components to be added to the DOM at any time.
