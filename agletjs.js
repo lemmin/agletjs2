@@ -3,6 +3,24 @@ function Aglet (element, name) {
 	this._name;
 
 	this._constructor(element, name);
+
+	this.setText = function (text, before) {
+		if (!this._dom.childNodes.length) {
+			this._dom.innerText = text;
+			return;
+		}
+		else if (this._dom.childNodes[0].nodeType == 3) {
+			this._dom.childNodes[0].textContent = text;
+			return;
+		}
+		else {
+			this._dom.innerText = text;
+		}
+	}
+
+	this.setHTML = function (html, before) {
+		this._dom.innerHTML = html;
+	}
 }
 
 Aglet.prototype._constructor = function (element, name) {
