@@ -21,11 +21,27 @@ function Aglet (element, name) {
 	this.setHTML = function (html, before) {
 		this._dom.innerHTML = html;
 	}
+
+	this.newAglet = function (aglet) {
+		let newdom = aglet.cloneNode(1);
+		return this._appendAglet(new Aglet(newdom), 1);
+	}
 }
 
 Aglet.prototype._constructor = function (element, name) {
 	this._dom = element;
 	this._name = name || element.getAttribute('ag-name') || element.id;
+
+	// Create a passthrough function for all HTMLElement methods.
+	// Note: This should use HTMLElement, but HTMLElement.prototype[prop] throws an error?
+	var test = document.createElement('div');
+	for (let prop in test) {
+		if (typeof test[prop] == 'function') {
+			this[prop] = function (...args) {
+				return this._dom[prop].apply(this._dom, args);
+			};
+		}
+	}
 
 	this._findAglets(element, this);
 }
@@ -58,14 +74,6 @@ Aglet.prototype._appendAglet = function (aglet, appendDOM) {
 	if (appendDOM) {
 		this._dom.appendChild(aglet._dom);
 	}
-
-	return aglet;
-}
-
-Aglet.prototype._newAglet = function (aglet) {
-	let newdom = aglet._dom.cloneNode(1);
-
-	aglet = this._appendAglet(new Aglet(newdom), 1);
 
 	return aglet;
 }
