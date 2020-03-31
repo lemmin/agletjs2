@@ -1,8 +1,10 @@
-function Aglet (element, name) {
+function Aglet (element, name, prefix) {
 	this._dom;
+	this._element; // Alias for _dom.
 	this._name;
+	this._prefix;
 
-	this._constructor(element, name);
+	this._constructor(element, name, prefix);
 
 	this.setText = function (text, before) {
 		if (!this._dom.childNodes.length) {
@@ -24,22 +26,32 @@ function Aglet (element, name) {
 
 	this.newAglet = function (aglet) {
 		let newdom = aglet.cloneNode(1);
-		return this._appendAglet(new Aglet(newdom), 1);
+		return this._appendAglet(new Aglet(newdom, null, this._prefix), 1);
 	}
 }
 
-Aglet.prototype._constructor = function (element, name) {
-	this._dom = element;
+Aglet.prototype._constructor = function (element, name, prefix) {
+	this._dom = this._element = element;
 	this._name = name || element.getAttribute('ag-name') || element.id;
+	this._prefix = prefix ? prefix : '$';
 
 	// Create a passthrough function for all HTMLElement methods.
-	// Note: This should use HTMLElement, but HTMLElement.prototype[prop] throws an error?
-	var test = document.createElement('div');
-	for (let prop in test) {
-		if (typeof test[prop] == 'function') {
+	// Define all properties with an overridden setters and getters.
+	for (let prop in element) {
+		if (typeof element[prop] == 'function') {
 			this[prop] = function (...args) {
 				return this._dom[prop].apply(this._dom, args);
 			};
+		}
+		else {
+			Object.defineProperty(this, prop, {
+				get: function () {
+					return this._dom[prop];
+				},
+				set: function (val) {
+					this._dom[prop] = val;
+				}
+			});
 		}
 	}
 
@@ -50,7 +62,7 @@ Aglet.prototype._findAglets = function (element, parent) {
 	for (let child of element.children) {
 		let id = child.getAttribute('ag-name') || child.id;
 		if (id) {
-			parent._appendAglet(new Aglet(child, id));
+			parent._appendAglet(new Aglet(child, id, this._prefix));
 		}
 		else if (child.children.length) {
 			this._findAglets(child, parent);
@@ -59,7 +71,7 @@ Aglet.prototype._findAglets = function (element, parent) {
 }
 
 Aglet.prototype._appendAglet = function (aglet, appendDOM) {
-	let name = aglet._name || 'anonymous_aglet';
+	let name = this._prefix + aglet._name || 'anonymous_aglet';
 
 	if (Array.isArray(this[name])) {
 		this[name].push(aglet);
